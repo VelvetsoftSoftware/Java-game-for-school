@@ -26,10 +26,10 @@ public class intro {
     0x1E1E2C  // F: Very Dark Slate (Reserve Slot 4 - Inner Fabric Shadows)
 };
 	
-    public static final int WIDTH_TILES = 20;
-	public static final int HEIGHT_TILES = 15;
-	public static final int[] LETTER_BUFFER = new int[WIDTH_TILES * HEIGHT_TILES];
-	public static final int[] CHARACTER_BUFFER = new int[WIDTH_TILES * HEIGHT_TILES];
+    private static final int WIDTH_TILES = 20;
+	private static final int HEIGHT_TILES = 15;
+	private static final int[] LETTER_BUFFER = new int[WIDTH_TILES * HEIGHT_TILES];
+	private static final int[] CHARACTER_BUFFER = new int[WIDTH_TILES * HEIGHT_TILES];
 
 	static {
 		// --- 1. TEXT BUFFER ---
@@ -47,24 +47,39 @@ public class intro {
         LETTER_BUFFER[textStart + 9] = 4;     
 
         // --- 2. 4x4 CHARACTER BUFFER ---
-        int charStartCol = 13; 
-        int charStartRow = 4; 
+		int charStartCol = 12; 
+		int charStartRow = 4; 
 
-        // Populate 4x4 grid using tile IDs 10 through 25
-        int tileID = 8;
-        for (int row = 0; row < 4; row++) {
-            int rowOffset = ((charStartRow + row) * WIDTH_TILES) + charStartCol;
-            for (int col = 0; col < 4; col++) {
-                CHARACTER_BUFFER[rowOffset + col] = tileID++;
-            }
-        } 
+		int[] tileLayout = {
+			// Col 0, Col 1, Col 2, Col 3
+			   8,  9, 10,  // Row 0: Hair Top / Crown
+               11, 12, 13,  // Row 1: Face, Eyes & Upper Hair
+               14, 15, 16,  // Row 2: Torso, Frilled Shirt & Sleeves
+               17, 18, 19,  // Row 3: Coat Flares & Gold-Trimmed Skirt
+               20, 21, 22   // Row 4: Stockings & Boots
+		};
+
+		int layoutIdx = 0;
+		
+		for (int row = 0; row < 5; row++) {
+			int rowOffset = ((charStartRow + row) * WIDTH_TILES) + charStartCol;
+			for (int col = 0; col < 3; col++) {
+				int texID = tileLayout[layoutIdx++];
+				
+				if (texID != -1 && texID < Textures.TEXTURES.length) {
+					CHARACTER_BUFFER[rowOffset + col] = texID;
+				} else {
+					CHARACTER_BUFFER[rowOffset + col] = 0; // Transparent background
+				}
+			}
+		}
 	}	
  
+	static int xPOS = 0, yPOS = 0, scale = 1, x = 0;
+	
     public static void loadintro(Window window) { // Added window parameter
-        int xPOS = 0, yPOS = 0, scale = 1, x = 0;
         
-        while(scale != 100) {
-			utility.sleep60fps();
+        if(scale != 100) {
             x = 0; // Reset buffer index for each frame/scale loop
             yPOS = 0;
             while (yPOS < 240) {
@@ -83,11 +98,12 @@ public class intro {
             
             // Build the screen from the layers
             window.compose();
-
             // Display it
             window.repaint();
             
             scale++;
-        }
+        } else {
+			window.fadeOUT(window);
+		}
     }
 }

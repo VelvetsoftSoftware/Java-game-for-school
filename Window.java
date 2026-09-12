@@ -15,7 +15,7 @@ public class Window extends JPanel {
 
 	BufferedImage screen;
 	
-    int scale = 1;
+    int scale = 3;
 
     private JFrame frame;
     private JComboBox<String> resolutionBox;
@@ -75,6 +75,12 @@ public class Window extends JPanel {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+		
+		input input = new input();
+		
+		frame.addKeyListener(input);
+		frame.setFocusable(true);
+		frame.requestFocus();
     }
 
     @Override
@@ -138,5 +144,77 @@ public class Window extends JPanel {
 		g.drawImage(foreground2, 0, 0, null);
 
 		g.dispose();
+	}
+	
+	public void clearBuffers() {
+		Graphics2D g = screen.createGraphics();
+		
+		g = background1.createGraphics();
+		g.setComposite(AlphaComposite.Clear);
+		g.fillRect(0, 0, 320, 240);
+		g.dispose();
+
+		g = background2.createGraphics();
+		g.setComposite(AlphaComposite.Clear);
+		g.fillRect(0, 0, 320, 240);
+		g.dispose();
+
+		g = playground.createGraphics();
+		g.setComposite(AlphaComposite.Clear);
+		g.fillRect(0, 0, 320, 240);
+		g.dispose();
+
+		g = foreground1.createGraphics();
+		g.setComposite(AlphaComposite.Clear);
+		g.fillRect(0, 0, 320, 240);
+		g.dispose();
+
+		g = foreground2.createGraphics();
+		g.setComposite(AlphaComposite.Clear);
+		g.fillRect(0, 0, 320, 240);
+		g.dispose();
+	}
+	
+	private void fade(int alpha) {
+		Graphics2D g = screen.createGraphics();
+
+		g.setComposite(
+			AlphaComposite.getInstance(
+				AlphaComposite.SRC_OVER,
+				alpha / 255.0f
+			)
+		);
+
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, 320, 240);
+
+		g.dispose();
+	}
+	
+	static int alpha = 0;
+	public void fadeOUT(Window window) {
+		if(alpha <= 255) {
+			fade(alpha);
+			window.repaint();
+			alpha += 5;
+		}
+		if(alpha == 255)  {
+			alpha = 0;
+			main.gameState++;
+		}
+	}
+	
+	static int alpha1 = 255;
+	public void fadeIN(Window window) {
+		if(alpha1 >= 0) {
+			compose();
+			fade(alpha1);
+			window.repaint();
+			alpha1 -= 5;
+		}
+		if(alpha1 == 0) {
+			alpha1 = 255;
+			main.firstrun = 1;
+		}
 	}
 }

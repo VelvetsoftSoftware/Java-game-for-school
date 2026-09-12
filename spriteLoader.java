@@ -15,7 +15,7 @@ public class spriteLoader {
 	//10 ≈ 0.10x
 	/////////////////////
 	
-	public static void drawtexture( Window window, int buffer, int textureid, int x, int y, int scale,int[] PALETTE) {
+	public static void drawtexture( Window window, int buffer, int textureid, int x, int y, int scale, int[] PALETTE) {
 
 		byte[] texture = Textures.TEXTURES[textureid];
 
@@ -53,3 +53,4 @@ public class spriteLoader {
 		}
 	}
 }
+

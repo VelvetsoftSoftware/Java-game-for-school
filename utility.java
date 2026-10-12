@@ -1,0 +1,68 @@
+import java.awt.event.KeyEvent;
+
+public class utility {
+	private static int y;
+	
+	public static void sleep60fps() {
+		try {
+			Thread.sleep(16);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}	
+	}
+	
+	public static void button(int maxbuttons) {
+		int buttonpossition = 0;
+		
+		if (Input.down(KeyEvent.VK_UP))
+			buttonpossition++;
+		if (Input.down(KeyEvent.VK_DOWN))
+			buttonpossition--;
+		if (Input.down(KeyEvent.VK_W))
+			buttonpossition++;
+		if (Input.down(KeyEvent.VK_S))
+			buttonpossition--;
+		
+		if(buttonpossition > maxbuttons)
+			buttonpossition = 0;
+		if(buttonpossition < 0)
+			buttonpossition = maxbuttons;
+	}
+	 //hack rn fix later
+	public static void scrollmap(int map[][], int cameraX, int cameraY, int scale, int[] pallete, int layer, Window window) {
+		for (int ty = 0; ty < map.length; ty++) {
+			for (int tx = 0; tx < map[ty].length; tx++) {
+				int x = tx * 16 - cameraX;
+				int y = ty * 16 - cameraY;
+				spriteLoader.drawtexture(window, layer, mainMenuTextures.MAINMENUTEXTURES, map[ty][tx], x, y, scale, pallete);
+			}
+		}
+	}
+	
+	public static void drawText(byte[] text, Window window ) {
+		int x = 2, y = 2, tracker = 0;
+		
+		while (tracker < text.length && y < 15) {
+			int wordLength = 0;
+
+			while (tracker + wordLength < text.length && text[tracker + wordLength] != 72) {
+				wordLength++;
+			}
+			if (x + wordLength > 20) {
+				x = 2;
+				y++;
+			}
+
+			for (int i = 0; i < wordLength; i++) {
+				spriteLoader.drawtexture(window, 0, systemTextures.ALPHABET_TEXTURES, text[tracker], x * 16, y * 16, 100, systemTextures.CHARCOLOR);
+				tracker++;
+				x++;
+			}
+
+			if (tracker < text.length && text[tracker] == 72) {
+				x++;
+				tracker++;
+			}
+		}
+	}
+}
